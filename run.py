@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import os
 from pathlib import Path
 from typing import Any
@@ -123,6 +124,15 @@ def call_openai_once(
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="W&B code/patch + Weave trace smoke test")
+    parser.add_argument(
+        "--run-name",
+        dest="run_name",
+        default=None,
+        help="Optional W&B run display name (overrides WANDB_RUN_NAME if set).",
+    )
+    args = parser.parse_args()
+
     dotenv.load_dotenv()
 
     entity = os.getenv("WANDB_ENTITY")
@@ -133,6 +143,8 @@ def main() -> int:
         raise RuntimeError("Set WANDB_API_KEY in .env")
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("Set OPENAI_API_KEY in .env")
+
+    run_name = args.run_name or os.getenv("WANDB_RUN_NAME")
 
     repo_root = Path(__file__).resolve().parent
     system_prompt_path = repo_root / "prompts" / "system_prompt.txt"
@@ -154,6 +166,7 @@ def main() -> int:
     run = wandb.init(
         entity=entity,
         project=project,
+        name=run_name,
         job_type="git-patch-weave-smoketest",
         config={
             "model": model,
