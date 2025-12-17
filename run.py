@@ -181,8 +181,31 @@ def main() -> int:
         save_code=True,
     )
 
-    # Log the entire repo root (no explicit include/exclude).
-    run.log_code(root=str(repo_root))
+    # Log *all* files under repo_root (W&B defaults to only *.py unless include_fn is overridden).
+    def _include_all(_path: str, _root: str) -> bool:
+        return True
+
+    def _exclude_noise(path: str, root: str) -> bool:
+        rel = os.path.relpath(path, root)
+        # Exclude common large/secret/derived dirs and files.
+        if rel == ".env" or rel.startswith(".env" + os.sep):
+            return True
+        for prefix in (
+            ".git" + os.sep,
+            "venv" + os.sep,
+            ".venv" + os.sep,
+            "wandb" + os.sep,
+            ".wandb" + os.sep,
+            "__pycache__" + os.sep,
+        ):
+            if rel.startswith(prefix):
+                return True
+        # Skip pyc files anywhere.
+        if rel.endswith(".pyc"):
+            return True
+        return False
+
+    run.log_code(root=str(repo_root), include_fn=_include_all, exclude_fn=_exclude_noise)
 
     user_prompt = (
         "You are helping plan a 2-day trip.\n"
