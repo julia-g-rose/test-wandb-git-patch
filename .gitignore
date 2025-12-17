@@ -11,4 +11,3 @@ wandb/
 # Purpose-built ignore targets for patch/code capture tests
 ignored_test.txt
 ignored_dir/
-

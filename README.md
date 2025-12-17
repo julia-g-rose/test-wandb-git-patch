@@ -6,37 +6,6 @@ References:
 - W&B Code panel docs: `https://docs.wandb.ai/models/app/features/panels/code`
 - Comet Experiment reference (comparison): `https://www.comet.com/docs/v2/api-and-sdk/python-sdk/reference/Experiment/`
 
-## One-time setup
-
-1) Create a `.env` (do NOT commit it):
-
-```bash
-cat > .env <<'EOF'
-WANDB_API_KEY=...
-OPENAI_API_KEY=...
-WANDB_ENTITY=your-entity
-WANDB_PROJECT=git-patch-weave-smoke
-# Optional: override where Weave traces go
-# WEAVE_PROJECT=git-patch-weave-smoke
-EOF
-```
-
-2) Create a git repo and commit the baseline (needed for meaningful diffs):
-
-```bash
-git init
-git add .
-git commit -m "baseline smoke test"
-```
-
-3) Install dependencies:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
 ## Baseline run (no repo changes)
 
 Run once to establish the baseline W&B run files and Weave trace:
