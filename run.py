@@ -181,6 +181,9 @@ def main() -> int:
         save_code=True,
     )
 
+    # Log the entire repo root (no explicit include/exclude).
+    run.log_code(root=str(repo_root))
+
     user_prompt = (
         "You are helping plan a 2-day trip.\n"
         "Destination: Tokyo.\n"
