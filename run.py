@@ -188,7 +188,8 @@ def main() -> int:
     def _exclude_noise(path: str, root: str) -> bool:
         rel = os.path.relpath(path, root)
         # Exclude common large/secret/derived dirs and files.
-        if rel == ".env" or rel.startswith(".env" + os.sep):
+        # Exclude `.env` anywhere in the repo (e.g. `.env`, `foo/.env`, `foo/.env/bar`).
+        if ".env" in rel.split(os.sep):
             return True
         for prefix in (
             ".git" + os.sep,
